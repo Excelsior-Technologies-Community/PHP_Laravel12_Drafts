@@ -1,59 +1,779 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# PHP_Laravel12_Drafts
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
 
-## About Laravel
+A Laravel 12 demo project that implements draft and publish functionality for posts using the Laravel Drafts package.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Project Description
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+PHP_Laravel12_Drafts is a simple Laravel 12 web application that demonstrates how to implement a draft and publish system for posts using the Laravel Drafts package.
 
-## Learning Laravel
+The application allows users to create posts, save them as drafts, and publish them when ready. This helps simulate how content management systems manage draft versions and published versions of content.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+The project is designed for learning purposes to understand how Laravel models, controllers, migrations, and views work together with a third-party package.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
 
-## Laravel Sponsors
+## Features
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+- Create new posts with title and content
 
-### Premium Partners
+- Save posts as Draft without publishing them
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+- Publish posts directly from the form
 
-## Contributing
+- Display posts with Draft or Published status
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+- Simple and clean user interface using Blade templates and CSS
 
-## Code of Conduct
+- Uses Laravel Drafts package to manage draft records
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
 
-## Security Vulnerabilities
+## Technologies Used
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+- PHP
+- Laravel 12
+- MySQL
+- Blade Template Engine
+- HTML
+- CSS
+- Composer
 
-## License
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+
+## System Requirements
+
+Before running the project, make sure the following tools are installed:
+
+- PHP 8.2 or higher
+
+- Composer
+
+- MySQL / MariaDB
+
+- XAMPP / Laragon / Local server
+
+- Laravel 12.x
+
+
+## Learning Objectives
+
+This project helps developers understand:
+
+- Laravel MVC architecture
+- Database migrations and schema design
+- Using third-party Laravel packages
+- Implementing draft and publish functionality
+- Creating simple CRUD-style applications in Laravel
+
+
+
+---
+
+
+
+## Installation Steps
+
+
+---
+
+
+## STEP 1: Create Laravel 12 Project
+
+### Open terminal / CMD and run:
+
+```
+composer create-project laravel/laravel PHP_Laravel12_Drafts "12.*"
+
+```
+
+### Go inside project:
+
+```
+cd PHP_Laravel12_Drafts
+
+```
+
+#### Explanation:
+
+This command installs a fresh Laravel 12 application using Composer and creates a new project folder named PHP_Laravel12_Drafts.
+
+The cd command moves into the project directory so you can start working on the application.
+
+
+
+
+## STEP 2: Database Setup 
+
+### Update database details:
+
+```
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=laravel12_Drafts
+DB_USERNAME=root
+DB_PASSWORD=
+
+```
+
+### Create database in MySQL / phpMyAdmin:
+
+```
+Database name: laravel12_Drafts
+
+```
+
+### Then Run:
+
+```
+php artisan migrate
+
+```
+
+
+#### Explanation:
+
+This step connects the Laravel application to the MySQL database by updating the .env configuration file.
+
+Running php artisan migrate creates the default Laravel database tables.
+
+
+
+
+
+## STEP 3: Install Laravel Drafts Package
+
+### Install package:
+
+```
+composer require oddvalue/laravel-drafts
+
+```
+
+### Publish configuration
+
+```
+php artisan vendor:publish --tag="drafts-config"
+
+```
+
+### Now config file will be created
+
+```
+config/drafts.php
+
+```
+
+### Default configuration example:
+
+```
+return [
+
+    'revisions' => [
+        'keep' => 10,
+    ],
+
+    'column_names' => [
+        'is_current' => 'is_current',
+        'is_published' => 'is_published',
+        'published_at' => 'published_at',
+        'uuid' => 'uuid',
+        'publisher_morph_name' => 'publisher',
+    ],
+
+    'auth' => [
+        'guard' => 'web',
+    ],
+];
+
+```
+
+#### Explanation:
+
+This command installs the Laravel Drafts package, which allows models to support draft and published versions of records.
+
+Publishing the configuration file creates config/drafts.php, where package settings can be customized.
+
+
+
+
+
+
+## STEP 4: Create Model and Migration
+
+### Create Post model
+
+```
+php artisan make:model Post -mcr
+
+```
+
+### This creates
+
+```
+app/Models/Post.php
+database/migrations/create_posts_table.php
+app/Http/Controllers/PostController.php
+
+```
+
+#### Explanation:
+
+This command creates a Post model, a database migration, and a PostController automatically.
+
+These files help manage post data, database structure, and application logic.
+
+
+
+
+
+## STEP 5: Migration Setup
+
+### Open migration: database/migrations/create_posts_table.php
+
+```
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration {
+    public function up(): void
+    {
+        Schema::create('posts', function (Blueprint $table) {
+
+            $table->id();
+            $table->string('title');
+            $table->text('content')->nullable();
+
+            $table->drafts();
+
+            $table->timestamps();
+        });
+    }
+
+    public function down(): void
+    {
+        Schema::dropIfExists('posts');
+    }
+};
+
+```
+
+
+### Then Run:
+
+```
+php artisan migrate
+
+```
+
+#### Explanation:
+
+In this step, we define the posts table structure including title, content, and draft-related columns.
+
+The $table->drafts() method adds columns required by the Laravel Drafts package to manage drafts and published records.
+
+
+
+
+
+## STEP 6: Setup Model
+
+### Open: app/Models/Post.php
+
+```
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Oddvalue\LaravelDrafts\Concerns\HasDrafts;
+
+class Post extends Model
+{
+    use HasDrafts;
+
+    protected $fillable = [
+        'title',
+        'content',
+        'is_published'
+    ];
+}
+
+```
+
+#### Explanation:
+
+The Post model uses the HasDrafts trait, which enables draft functionality for the model.
+
+The $fillable property allows safe mass assignment of the title, content, and publish status.
+
+
+
+
+
+
+## STEP 7: Setup Controller
+
+### Open: app/Http/Controllers/PostController.php
+
+```
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Post;
+use Illuminate\Http\Request;
+
+class PostController extends Controller
+{
+
+    public function index()
+    {
+        $posts = Post::withDrafts()->get();
+
+        return view('posts.index', compact('posts'));
+    }
+
+    public function create()
+    {
+        return view('posts.create');
+    }
+
+    public function store(Request $request)
+    {
+
+        $request->validate([
+            'title' => 'required'
+        ]);
+
+        if ($request->status == "draft") {
+
+            Post::createDraft([
+                'title' => $request->title,
+                'content' => $request->content
+            ]);
+
+        } else {
+
+            Post::create([
+                'title' => $request->title,
+                'content' => $request->content
+            ]);
+
+        }
+
+        return redirect()->route('posts.index');
+    }
+
+}
+
+```
+
+#### Explanation:
+
+The controller handles the application logic for displaying posts, creating new posts, and saving them as draft or published.
+
+It checks the form status and stores the post accordingly.
+
+
+
+
+## STEP 8: Routes
+
+### Open: routes/web.php
+
+```
+<?php
+
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PostController;
+
+Route::get('/', [PostController::class,'index'])->name('posts.index');
+
+Route::get('/create',[PostController::class,'create']);
+
+Route::post('/store',[PostController::class,'store'])->name('posts.store');
+
+```
+
+#### Explanation:
+
+Routes define the URLs of the application and map them to controller methods.
+
+These routes allow users to view posts, open the create page, and store new posts.
+
+
+
+
+
+
+## STEP 9: Create Views
+
+### Create folder
+
+```
+resources/views/posts
+
+```
+
+### resources/views/posts/index.blade.php
+
+```
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Post List</title>
+
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f6f9;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 900px;
+            margin: 40px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 10px 16px;
+            background: #3490dc;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background: #f1f1f1;
+        }
+
+        .status-published {
+            color: green;
+            font-weight: bold;
+        }
+
+        .status-draft {
+            color: orange;
+            font-weight: bold;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Post List</h1>
+
+        <a href="/create" class="btn">Create Post</a>
+
+        <table>
+
+            <tr>
+                <th>Title</th>
+                <th>Status</th>
+            </tr>
+
+            @foreach($posts as $post)
+
+                <tr>
+
+                    <td>{{ $post->title }}</td>
+
+                    <td>
+
+                        @if($post->is_published)
+
+                            <span class="status-published">
+                                Published
+                            </span>
+
+                        @else
+
+                            <span class="status-draft">
+                                Draft
+                            </span>
+
+                        @endif
+
+                    </td>
+
+                </tr>
+
+            @endforeach
+
+        </table>
+
+    </div>
+
+</body>
+
+</html>
+
+```
+
+
+### resources/views/posts/create.blade.php
+
+```
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <title>Create Post</title>
+
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f4f6f9;
+            margin: 0;
+        }
+
+        .container {
+            width: 600px;
+            margin: 40px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            margin-bottom: 20px;
+        }
+
+        input,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 6px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        textarea {
+            height: 120px;
+        }
+
+        .btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .publish {
+            background: #28a745;
+            color: white;
+        }
+
+        .draft {
+            background: #ffc107;
+            color: black;
+        }
+
+        .back {
+            display: inline-block;
+            margin-bottom: 15px;
+            text-decoration: none;
+            color: #3490dc;
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Create Post</h1>
+
+        <a href="/" class="back">← Back to Posts</a>
+
+        <form action="{{ route('posts.store') }}" method="POST">
+
+            @csrf
+
+            <label>Title</label>
+
+            <input type="text" name="title" required>
+
+            <label>Content</label>
+
+            <textarea name="content"></textarea>
+
+            <button type="submit" name="status" value="publish" class="btn publish">
+                Publish
+            </button>
+
+            <button type="submit" name="status" value="draft" class="btn draft">
+                Save Draft
+            </button>
+
+        </form>
+
+    </div>
+
+</body>
+
+</html>
+
+```
+
+#### Explanation:
+
+Views are used to create the user interface of the application using Blade templates.
+
+The index page displays all posts, and the create page provides a form to add new posts.
+
+
+
+
+
+ ## STEP 10: Test It
+
+### Start Laravel dev server:
+
+```
+php artisan serve
+
+```
+
+### Open in browser:
+
+```
+http://127.0.0.1:8000
+
+```
+
+#### Explanation:
+
+Running php artisan serve starts the Laravel development server.
+
+Opening the given URL in the browser allows you to test the draft and publish functionality of the application.
+
+
+
+
+
+## Expected Output:
+
+### Post List Page:
+
+
+<img width="1916" height="940" alt="Screenshot 2026-03-12 125700" src="https://github.com/user-attachments/assets/a4a9dfa3-f7ea-4ba6-96bb-122edb2ba088" />
+
+
+### Create Post Page:
+
+
+<img width="1919" height="913" alt="Screenshot 2026-03-12 125724" src="https://github.com/user-attachments/assets/5963586b-e425-4ede-8ebe-c465487884d7" />
+
+
+### Draft Post Status:
+
+
+<img width="1918" height="944" alt="Screenshot 2026-03-12 125734" src="https://github.com/user-attachments/assets/f7b95793-7a5d-4b07-9bc0-029e19ce07a3" />
+
+
+### Publish Post:
+
+
+<img width="1919" height="930" alt="Screenshot 2026-03-12 125802" src="https://github.com/user-attachments/assets/fe445499-3162-4449-ab4b-1a3e1fe4bf10" />
+
+
+### Published Post Status:
+
+
+<img width="1919" height="909" alt="Screenshot 2026-03-12 125809" src="https://github.com/user-attachments/assets/9b979939-e259-4db2-aa00-196d69a413d6" />
+
+
+
+
+---
+
+# Project Folder Structure:
+
+```
+PHP_Laravel12_Drafts
+│
+├── app
+│   │
+│   ├── Http
+│   │   └── Controllers
+│   │       └── PostController.php
+│   │
+│   └── Models
+│       └── Post.php
+│
+├── bootstrap
+│
+├── config
+│   ├── app.php
+│   ├── database.php
+│   └── drafts.php
+│
+├── database
+│   │
+│   ├── migrations
+│   │   └── xxxx_xx_xx_create_posts_table.php
+│   │
+│   └── seeders
+│
+├── public
+│   └── index.php
+│
+├── resources
+│   │
+│   ├── views
+│   │   └── posts
+│   │       ├── index.blade.php
+│   │       └── create.blade.php
+│   │
+│   ├── css
+│   └── js
+│
+├── routes
+│   └── web.php
+│
+├── storage
+│
+├── tests
+│
+├── .env
+├── artisan
+├── composer.json
+└── README.md
+
+```
