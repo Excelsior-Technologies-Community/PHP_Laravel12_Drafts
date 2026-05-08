@@ -8,9 +8,25 @@ use Illuminate\Http\Request;
 class PostController extends Controller
 {
 
-    public function index()
+    public function index(Request $request)
     {
-        $posts = Post::withDrafts()->get();
+        $query = Post::withDrafts();
+
+        // SEARCH
+        if ($request->search) {
+            $query->where('title', 'LIKE', '%' . $request->search . '%');
+        }
+
+        // FILTER
+        if ($request->status == 'draft') {
+            $query->where('is_published', false);
+        }
+
+        if ($request->status == 'published') {
+            $query->where('is_published', true);
+        }
+
+        $posts = $query->orderBy('id', 'asc')->get();
 
         return view('posts.index', compact('posts'));
     }
@@ -43,7 +59,16 @@ class PostController extends Controller
 
         }
 
-        return redirect()->route('posts.index');
+        return redirect()->route('posts.index')
+            ->with('success', 'Post created successfully.');
     }
 
+
+    // PREVIEW FEATURE
+    public function preview($id)
+    {
+        $post = Post::withDrafts()->findOrFail($id);
+
+        return view('posts.preview', compact('post'));
+    }
 }
