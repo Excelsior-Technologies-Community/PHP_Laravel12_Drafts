@@ -1,9 +1,7 @@
 <!DOCTYPE html>
 <html>
-
 <head>
     <title>Preview Post</title>
-
     <style>
         body {
             font-family: Arial;
@@ -11,7 +9,6 @@
             margin: 0;
             padding: 40px;
         }
-
         .container {
             max-width: 800px;
             margin: auto;
@@ -20,7 +17,6 @@
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
-
         .status {
             display: inline-block;
             padding: 6px 12px;
@@ -28,24 +24,24 @@
             margin-bottom: 20px;
             font-size: 14px;
         }
-
         .published {
             background: #d4edda;
             color: #155724;
         }
-
+        .review {
+            background: #cce5ff;
+            color: #004085;
+        }
         .draft {
             background: #fff3cd;
             color: #856404;
         }
-
         .back {
             text-decoration: none;
             display: inline-block;
             margin-bottom: 20px;
             color: #3490dc;
         }
-
         .action-buttons {
             margin-top: 30px;
             padding-top: 20px;
@@ -53,61 +49,47 @@
             display: flex;
             gap: 10px;
         }
-
         .btn {
             padding: 10px 16px;
             border-radius: 5px;
             text-decoration: none;
             display: inline-block;
         }
-
         .btn-edit {
             background: #ffc107;
             color: #333;
         }
-
         .btn-back {
             background: #6c757d;
             color: white;
         }
-
         h1 {
             margin-bottom: 20px;
         }
-
         p {
             line-height: 1.8;
             color: #444;
         }
     </style>
-
 </head>
-
 <body>
-
 <div class="container">
-
-    <a href="/" class="back">← Back to Posts</a>
-
+    <a href="{{ route('posts.index') }}" class="back">← Back to Posts</a>
     <div>
-        @if($post->is_published)
+        @if($post->status == 'published')
             <span class="status published">Published</span>
+        @elseif($post->status == 'review')
+            <span class="status review">In Review</span>
         @else
             <span class="status draft">Draft Preview</span>
         @endif
     </div>
-
     <h1>{{ $post->title }}</h1>
-
     <p>{{ $post->content }}</p>
-
     <div class="action-buttons">
         <a href="{{ route('posts.edit', $post->id) }}" class="btn btn-edit">✏️ Edit this post</a>
-        <a href="/" class="btn btn-back">← All Posts</a>
+        <a href="{{ route('posts.index') }}" class="btn btn-back">← All Posts</a>
     </div>
-
 </div>
-
 </body>
-
 </html>

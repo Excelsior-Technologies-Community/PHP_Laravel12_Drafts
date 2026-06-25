@@ -4,32 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PostController extends Controller
 {
+    private function normalizeStatus($value)
+    {
+        if ($value === 'publish') return 'published';
+        if ($value === 'draft') return 'draft';
+        if ($value === 'review') return 'review';
+        return $value;
+    }
 
     public function index(Request $request)
     {
-        $query = Post::withDrafts();
-
-        // SEARCH
-        if ($request->search) {
-            $query->where('title', 'LIKE', '%' . $request->search . '%');
-        }
-
-        // FILTER
-        if ($request->status == 'draft') {
-            $query->where('is_published', false);
-        }
-
-        if ($request->status == 'published') {
-            $query->where('is_published', true);
-        }
-
-        // PAGINATION (10 posts per page)
-        $posts = $query->orderBy('id', 'desc')->paginate(10);
-
-        return view('posts.index', compact('posts'));
+        return view('posts.index');
     }
 
     public function create()
@@ -40,100 +29,163 @@ class PostController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'title' => 'required|min:3|max:255',
-            'content' => 'nullable|string'
+            'title'   => 'required|min:3|max:255',
+            'content' => 'nullable|string',
         ]);
 
-        if ($request->status == "draft") {
-            Post::createDraft([
-                'title' => $request->title,
-                'content' => $request->content
-            ]);
-        } else {
-            Post::create([
-                'title' => $request->title,
-                'content' => $request->content
-            ]);
-        }
+        $status = $this->normalizeStatus($request->status ?? 'draft');
+
+        $post = Post::create([
+            'title'          => $request->title,
+            'content'        => $request->content,
+            'status'         => $status,
+            'is_published'   => $status === 'published',
+            'publisher_type' => \App\Models\User::class,
+            'publisher_id'   => auth()->id() ?? 1,
+        ]);
+
+        DB::table('post_versions')->insert([
+            'post_id'    => $post->id,
+            'title'      => $post->title,
+            'content'    => $post->content,
+            'version'    => 1,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
         return redirect()->route('posts.index')
             ->with('success', 'Post created successfully.');
     }
 
-    // PREVIEW FEATURE
     public function preview($id)
     {
-        $post = Post::withDrafts()->findOrFail($id);
+        $post = Post::withoutGlobalScopes()->findOrFail($id);
         return view('posts.preview', compact('post'));
     }
 
-    // EDIT FEATURE
     public function edit($id)
     {
-        $post = Post::withDrafts()->findOrFail($id);
-        return view('posts.edit', compact('post'));
+        $post     = Post::withoutGlobalScopes()->findOrFail($id);
+        $versions = DB::table('post_versions')
+            ->where('post_id', $id)
+            ->orderBy('version', 'desc')
+            ->get();
+
+        return view('posts.edit', compact('post', 'versions'));
     }
 
-    // UPDATE FEATURE
     public function update(Request $request, $id)
     {
         $request->validate([
-            'title' => 'required|min:3|max:255',
-            'content' => 'nullable|string'
+            'title'   => 'required|min:3|max:255',
+            'content' => 'nullable|string',
         ]);
 
-        $post = Post::withDrafts()->findOrFail($id);
+        $post = Post::withoutGlobalScopes()->findOrFail($id);
 
-        $post->title = $request->title;
-        $post->content = $request->content;
+        $status = $this->normalizeStatus($request->status ?? $post->status);
 
-        if ($request->has('status')) {
-            $post->is_published = ($request->status == 'publish');
+        $post->title          = $request->title;
+        $post->content        = $request->content;
+        $post->status         = $status;
+        $post->is_published   = $status === 'published';
+        $post->publisher_type = \App\Models\User::class;
+        $post->publisher_id   = auth()->id() ?? 1;
+        
+        if ($status === 'published') {
+            $post->published_at = now();
         }
 
         $post->save();
+
+        $latestVersion = DB::table('post_versions')
+            ->where('post_id', $id)
+            ->max('version') ?? 0;
+
+        DB::table('post_versions')->insert([
+            'post_id'    => $post->id,
+            'title'      => $post->title,
+            'content'    => $post->content,
+            'version'    => $latestVersion + 1,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
         return redirect()->route('posts.index')
             ->with('success', 'Post updated successfully.');
     }
 
-    // DELETE FEATURE
     public function destroy($id)
     {
-        $post = Post::withDrafts()->findOrFail($id);
+        $post = Post::withoutGlobalScopes()->findOrFail($id);
         $post->delete();
 
         return redirect()->route('posts.index')
             ->with('success', 'Post deleted successfully.');
     }
 
-    // LIVE SEARCH (AJAX)
-   // LIVE SEARCH (AJAX)
-public function liveSearch(Request $request)
-{
-    $search = $request->search;
-    $status = $request->status;
+    public function liveSearch(Request $request)
+    {
+        $search = $request->search;
+        $status = $request->status;
 
-    $query = Post::withDrafts();
+        $query = Post::withoutGlobalScopes();
 
-    if ($search) {
-        $query->where('title', 'LIKE', '%' . $search . '%');
+        if ($search) {
+            $query->where('title', 'LIKE', '%' . $search . '%');
+        }
+
+        if ($status) {
+            $query->where('status', $status);
+        }
+
+        $posts = $query->orderBy('id', 'desc')->paginate(10);
+
+        if ($request->ajax() || $request->has('ajax')) {
+            return view('posts.partials.posts-table', compact('posts'))->render();
+        }
+
+        return view('posts.index', compact('posts'));
     }
 
-    if ($status == 'draft') {
-        $query->where('is_published', false);
-    } elseif ($status == 'published') {
-        $query->where('is_published', true);
+    public function autoSave(Request $request, $id)
+    {
+        $post = Post::withoutGlobalScopes()->findOrFail($id);
+
+        $post->title   = $request->title ?? $post->title;
+        $post->content = $request->content ?? $post->content;
+        $post->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Auto-save successful',
+        ]);
     }
 
-    $posts = $query->orderBy('id', 'desc')->paginate(10);
+    public function restoreVersion($id, $versionId)
+    {
+        $post    = Post::withoutGlobalScopes()->findOrFail($id);
+        $version = DB::table('post_versions')->where('id', $versionId)->first();
 
-    // Return only the partial view for AJAX requests
-    if ($request->ajax() || $request->has('ajax')) {
-        return view('posts.partials.posts-table', compact('posts'))->render();
+        if ($version) {
+            $post->title   = $version->title;
+            $post->content = $version->content;
+            $post->save();
+        }
+
+        return redirect()->back()->with('success', 'Version restored successfully.');
     }
 
-    // For normal requests, return full view
-    return view('posts.index', compact('posts'));
-}
+    public function collaborate(Request $request, $id)
+    {
+        $post = Post::withoutGlobalScopes()->findOrFail($id);
+
+        $post->content = $request->content;
+        $post->save();
+
+        return response()->json([
+            'success' => true,
+            'content' => $post->content,
+        ]);
+    }
 }
