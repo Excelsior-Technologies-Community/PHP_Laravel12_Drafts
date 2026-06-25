@@ -22,10 +22,12 @@
                     @endif
                 </td>
                 <td>
-                    @if($post->is_published)
+                    @if($post->status == 'published')
                         <span class="status-published">Published</span>
+                    @elseif($post->status == 'review')
+                        <span class="status-review">In Review</span>
                     @else
-                        <span class="status-draft"> Draft</span>
+                        <span class="status-draft">Draft</span>
                     @endif
                 </td>
                 <td>
@@ -57,6 +59,6 @@
 @else
     <div class="empty">
         <p>📭 No posts found.</p>
-        <p><a href="/create" class="btn btn-create" style="margin-top: 10px;">+ Create your first post</a></p>
+        <p><a href="{{ route('posts.create') }}" class="btn btn-create" style="margin-top: 10px;">+ Create your first post</a></p>
     </div>
 @endif
